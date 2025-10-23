@@ -1,0 +1,45 @@
+# Supermarket Sales Data Warehouse Configuration
+
+database:
+    host: "localhost"
+    port: 5432
+    name: "supermarket_sales"
+    user: "root"
+    password: "root"
+
+data_paths:
+    raw: "./data/raw/"
+    processed: "./data/processed/"
+    warehouse: "./data/warehouse/"
+
+etl:
+    batch_size: 1000
+    max_retries: 3
+    timeout: 300
+
+logging:
+    level: "INFO"
+    file: "./logs/etl.log"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+data_quality:
+    min_sales_amount: 0
+    max_sales_amount: 10000
+    required_columns:
+        - "Invoice ID"
+        - "Branch"
+        - "City"
+        - "Customer type"
+        - "Gender"
+        - "Product line"
+        - "Unit price"
+        - "Quantity"
+        - "Tax 5%"
+        - "Sales"
+        - "Date"
+        - "Time"
+        - "Payment"
+        - "cogs"
+        - "gross margin percentage"
+        - "gross income"
+        - "Rating"
