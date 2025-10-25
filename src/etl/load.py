@@ -29,6 +29,9 @@ class DataLoader:
         try:
             logger.info("Starting data loading process")
             
+            # Clear fact table first to avoid FK constraint violations
+            self._clear_table('fact_sales')
+            
             # Load dimension tables first
             self._load_dimensions(transformed_data)
             
@@ -88,8 +91,7 @@ class DataLoader:
         
         if 'fact_sales' in data:
             try:
-                # Clear existing data (for development)
-                self._clear_table('fact_sales')
+                # Note: fact_sales is already cleared in load_data() to avoid FK constraints
                 
                 # Insert data in batches to avoid parameter limit
                 batch_size = 50

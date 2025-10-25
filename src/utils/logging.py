@@ -4,6 +4,7 @@ Logging utilities for Supermarket Sales Data Warehouse
 
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -39,14 +40,30 @@ def setup_logging(
         log_path = Path(log_file)
         log_path.parent.mkdir(parents=True, exist_ok=True)
     
+    # Create console handler with UTF-8 encoding
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(getattr(logging, log_level.upper()))
+    console_handler.setFormatter(logging.Formatter(log_format))
+    
+    # Force UTF-8 encoding for console output on Windows
+    if sys.platform == 'win32':
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except AttributeError:
+            # Python < 3.7
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    
+    # Create file handler with UTF-8 encoding
+    file_handler = logging.FileHandler(log_file, encoding='utf-8') if log_file else logging.NullHandler()
+    file_handler.setLevel(getattr(logging, log_level.upper()))
+    file_handler.setFormatter(logging.Formatter(log_format))
+    
     # Configure logging
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
         format=log_format,
-        handlers=[
-            logging.StreamHandler(),  # Console output
-            logging.FileHandler(log_file) if log_file else logging.NullHandler()
-        ]
+        handlers=[console_handler, file_handler]
     )
     
     # Create logger
